@@ -4,7 +4,7 @@
 [![Dependency Status](https://david-dm.org/svenschoenung/gulp-parameterized.svg)](https://david-dm.org/svenschoenung/gulp-parameterized)
 [![devDependency Status](https://david-dm.org/svenschoenung/gulp-parameterized/dev-status.svg)](https://david-dm.org/svenschoenung/gulp-parameterized#info=devDependencies)
 [![Code Climate](https://codeclimate.com/github/svenschoenung/gulp-parameterized/badges/gpa.svg)](https://codeclimate.com/github/svenschoenung/gulp-parameterized)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/)](https://www.codacy.com/app/svenschoenung/gulp-parameterized)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5309f1912ff345e1b51bca85615bd25d)](https://www.codacy.com/app/svenschoenung/gulp-parameterized)
 
 # gulp-parameterized
 
@@ -22,6 +22,7 @@ One often encountered use case is to generate separate **development** and **pro
 
 We can use `gulp-parameterized` to parameterize the `build` task with a `--production` flag:
 
+```JavaScript
     var gulp = require('gulp');
     var parameterized = require('gulp-parameterized');
     
@@ -39,6 +40,7 @@ We can use `gulp-parameterized` to parameterize the `build` task with a `--produ
       /* copy to server */
       cb();
     }));
+```
 
 Now running any of the following commands will generate a **production** build:
 
