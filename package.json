@@ -1,7 +1,7 @@
 {
   "name": "gulp-parameterized",
-  "description": "",
-  "version": "0.0.0",
+  "description": "Parameterize gulp tasks",
+  "version": "0.0.1",
   "author": {
     "name": "Sven Schönung <sven.schoenung@gmail.com> (http://sven.schoenung.org/)"
   },
@@ -11,7 +11,7 @@
     "url": "git://github.com/svenschoenung/gulp-parameterized.git"
   },
   "engines": {
-    "node": ">= 0.12"
+    "node": ">= 0.10"
   },
   "dependencies": {
     "lodash": "^4.16.6",
