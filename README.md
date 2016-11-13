@@ -8,9 +8,47 @@
 
 # gulp-parameterized
 
+Parameterize gulp tasks.
+
+**NOTE: REQUIRES GULP 4.0**
+
 ## Installation
 
-## Usage
+    npm install --save-dev gulp-parameterized
+
+## Example
+
+One often encountered use case is to generate separate **development** and **production** builds where only the production build should be deployed to the server.
+
+We can use `gulp-parameterized` to parameterize the `build` task with a `--production` flag:
+
+    var gulp = require('gulp');
+    var parameterized = require('gulp-parameterized');
+    
+    gulp.task('build', parameterized(function(_) {
+      if (_.params.production) {
+        /* do a production build */
+        return gulp.src('src/*.js').pipe(...);
+      } else {
+        /* do a development build */
+        return gulp.src('src/*.js').pipe(...);
+      }
+    }));
+
+    gulp.task('deploy', parameterized.series('build --production', function(cb) {
+      /* copy to server */
+      cb();
+    }));
+
+Now running any of the following commands will generate a **production** build:
+
+    $ gulp build --production
+    $ gulp deploy
+    
+Wheras running any of the following commands will generate a **development** build:
+
+    $ gulp build
+    $ gulp build --no-production
 
 ## License
 
