@@ -47,7 +47,7 @@ Now running any of the following commands will generate a **production** build:
     $ gulp build --production
     $ gulp deploy
     
-Wheras running any of the following commands will generate a **development** build:
+Whereas running any of the following commands will generate a **development** build:
 
     $ gulp build
     $ gulp build --no-production
