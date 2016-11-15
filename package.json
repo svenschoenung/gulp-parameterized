@@ -30,6 +30,22 @@
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha test.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "codacy": "istanbul cover ./node_modules/mocha/bin/_mocha test.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "gulp",
+    "gulp4",
+    "gulp-4",
+    "gulpfriendly",
+    "undertaker",
+    "parameterized",
+    "parameters",
+    "parameter",
+    "cli",
+    "arguments",
+    "yargs",
+    "tasks",
+    "task",
+    "series",
+    "parallel"
+  ],
   "license": "MIT"
 }
