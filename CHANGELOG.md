@@ -9,7 +9,7 @@
 - Minor formatting changes
 
 **Tests**
-- Introduced tests for parameterized.task()
+- Introduced tests for `parameterized.task()`
 
 ## v0.0.2 (2016-11-15)
 
