@@ -48,6 +48,7 @@ Now running any of the following commands will generate a **production** build:
 ```
 $ gulp build --production
 $ gulp deploy
+```
     
 Whereas running any of the following commands will generate a **development** build:
 
