@@ -13,7 +13,9 @@ Parameterize gulp tasks.
 
 ## Installation
 
-    npm install --save-dev gulp-parameterized
+```
+npm install --save-dev gulp-parameterized
+```
 
 ## Example
 
@@ -43,13 +45,16 @@ gulp.task('deploy', parameterized.series('build --production', function(cb) {
 
 Now running any of the following commands will generate a **production** build:
 
-    $ gulp build --production
-    $ gulp deploy
+```
+$ gulp build --production
+$ gulp deploy
     
 Whereas running any of the following commands will generate a **development** build:
 
-    $ gulp build
-    $ gulp build --no-production
+```
+$ gulp build
+$ gulp build --no-production
+```
 
 ## License
 
