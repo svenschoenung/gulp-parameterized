@@ -24,8 +24,6 @@ function testCallingTask(config) {
   config.setup(gulp, parameterized, resultCallback);
 
   gulp.series('task')(function() {
-    delete config.actual['_'];
-    delete config.actual['$0'];
     expect(config.actual).to.eql(config.expected);
     config.callback();
   });
@@ -43,8 +41,6 @@ function testCallingOtherTask(config) {
   gulp.task('task', parameterized.apply(null, config.call));
 
   gulp.series('task')(function() {
-    delete config.actual['_'];
-    delete config.actual['$0'];
     expect(config.actual).to.eql(config.expected);
     config.callback();
   });
