@@ -17,44 +17,47 @@ Parameterize gulp tasks.
 npm install --save-dev gulp-parameterized
 ```
 
-## Example
+## Usage
 
-One often encountered use case is to generate separate **development** and **production** builds where only the production build should be deployed to the server.
+You can accept parameters in a task by wrapping the task function in `parameterized()`:
 
-We can use `gulp-parameterized` to parameterize the `build` task with a `--production` flag:
-
-```JavaScript
-var gulp = require('gulp');
+```
 var parameterized = require('gulp-parameterized');
-    
-gulp.task('build', parameterized(function(_) {
-  if (_.params.production) {
-    /* do a production build */
-    return gulp.src('src/*.js').pipe(...);
-  } else {
-    /* do a development build */
-    return gulp.src('src/*.js').pipe(...);
-  }
-}));
 
-gulp.task('deploy', parameterized.series('build --production', function(cb) {
-  /* copy to server */
+gulp.task('hello', parameterized(function(cb, params)) {
+  console.log('hello ' + params.name + '!');
   cb();
-}));
+});
 ```
 
-Now running any of the following commands will generate a **production** build:
+You can then pass parameters to a task on the command line:
 
 ```
-$ gulp build --production
-$ gulp deploy
+$ gulp hello --name world!
+[23:43:51] Using gulpfile ~/hello-example/gulpfile.js
+[23:43:51] Starting 'hello'...
+hello world!
+[23:43:51] Finished 'hello' after 1.98 ms
 ```
-    
-Whereas running any of the following commands will generate a **development** build:
+
+Use `parameterized.series()` and `parameterized.parallel()` instead of `gulp.series()` and `gulp.parallel()` if you want to call another task in your gulpfile and pass parameters to it:
 
 ```
-$ gulp build
-$ gulp build --no-production
+gulp.task('hello-world', parameterized.series('hello --name world'));
+
+gulp.task('hello-gulp', parameterized.series('hello --name gulp'));
+```
+
+Invoking the `hello-gulp` task on the command line:
+
+```
+$ gulp hello-gulp
+[23:49:38] Using gulpfile ~/hello-example/gulpfile.js
+[23:49:38] Starting 'hello-gulp'...
+[23:49:38] Starting 'hello'...
+hello gulp!
+[23:49:38] Finished 'hello' after 1.28 ms
+[23:49:38] Finished 'hello-gulp' after 4.91 ms
 ```
 
 ## License
