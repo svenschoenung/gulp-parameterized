@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var yargs = require('yargs');
+var gutil = require('gulp-util');
 
 var requireGulp = require('./lib/util/requireGulp.js');
 
@@ -29,5 +30,7 @@ function createInstance(config) {
 
 module.exports = createInstance({
   gulp: requireGulp,
-  argv: yargs.argv
+  argv: yargs.argv,
+  log: gutil.log,
+  _require: null
 });

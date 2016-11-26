@@ -46,6 +46,58 @@ function testCallingOtherTask(config) {
   });
 }
 
+describe('parameterized', function() {
+  it('accepts a gulp instance via withGulp()', function(cb) {
+    var gulp = requireUncached('gulp');
+    gulp.task('task', function(done) { done(); });
+
+    var parameterized = requireUncached('./index.js').withGulp(gulp);
+    parameterized.series('task')(cb);
+  });
+  it('accepts a gulp instance via withOptions()', function(cb) {
+    var gulp = requireUncached('gulp');
+    gulp.task('task', function(done) { done(); });
+
+    var parameterized = requireUncached('./index.js').withOptions({
+      gulp:gulp
+    });
+    parameterized.series('task')(cb);
+  });
+  it('fails if no gulp instance can be found', function(cb) {
+    var gulp = requireUncached('gulp');
+    gulp.task('task', function(done) { done(); });
+
+    var capturedOutput = '';
+    var parameterized = requireUncached('./index.js').withOptions({
+      _require: function(mod) {
+        return require((mod === 'gulp') ? null : mod);
+      },
+      log: function (output) { capturedOutput += output; }
+    });
+
+    expect(parameterized.series.bind(null, 'task')).to.throw(Error);
+    expect(capturedOutput).to.match(/Fatal error/);
+    cb();
+  });
+  it('warns if gulp metadata cannot be accessed', function(cb) {
+    var gulp = requireUncached('gulp');
+    gulp.task('task', function(done) { done(); });
+
+    var capturedOutput = '';
+    var parameterized = requireUncached('./index.js').withOptions({
+      _require: function(mod) {
+        return (mod === 'gulp') ? require(mod) : null;
+      },
+      log: function (output) { capturedOutput += output; }
+    });
+
+    parameterized.series('task')(function() {
+      expect(capturedOutput).to.match(/Warning/);
+      cb();
+    });
+  });
+});
+
 describe('parameterized.task()', function() {
 
   it('provides a regular callback', function(cb) {
