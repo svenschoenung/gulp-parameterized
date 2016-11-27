@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.1.0 (2016-11-27)
+
+**Features**
+- Added `paramsName` and `callbackName` options
+- Show error message when requiring of gulp instance fails
+- Show warning message when requiring of gulp metadata instance fails
+
+**Bugfixes**
+- Fixed the order in which params are merged. Params that are specified later should take precedence over params that were specified earlier. The order is therefore: command line params > `series()` and `parallel()` params > task default params
+
+**Documentation**
+- Rewrote README to give a better introduction to accepting and passing parameters
+- Formatting fixes
+
+**Tests**
+- Added tests for `parameterized.series()` and `parameterized.parallel()`
+- Added tests for `parameterized` options
+- Refactored existing tests
+
 ## v0.0.3 (2016-11-23)
 
 **Bugfixes**
