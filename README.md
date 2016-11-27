@@ -23,7 +23,7 @@ npm install --save-dev gulp-parameterized
 
 You can accept parameters in a task by wrapping the task function in `parameterized()`:
 
-```
+```javascript
 var parameterized = require('gulp-parameterized');
 
 gulp.task('hello', parameterized(function(cb, params)) {
@@ -44,7 +44,7 @@ hello world!
 
 Use `parameterized.series()` and `parameterized.parallel()` instead of `gulp.series()` and `gulp.parallel()` if you want to call another task in your gulpfile and pass parameters to it:
 
-```
+```javascript
 gulp.task('hello-world', parameterized.series('hello --name world'));
 
 gulp.task('hello-gulp', parameterized.series('hello --name gulp'));
