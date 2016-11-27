@@ -2,13 +2,13 @@
 
 * [Installation and usage](#installation-and-usage)
 * [Parameterizing a task](#parameterizing-a-task)
-* [Accepting parameters in a task](#accepting-parameters-in-a-task)
-* [Second-argument style and single-argument style](#second-argument-style-and-single-argument-style)
-* [Using parameter injection](#using-parameter-injection)
-* [Specifying default parameters](#specifying-default-parameters)
+  * [Accepting parameters in a task](#accepting-parameters-in-a-task)
+    * [Second-argument style and single-argument style](#second-argument-style-and-single-argument-style)
+    * [Using parameter injection](#using-parameter-injection)
+  * [Specifying default parameters](#specifying-default-parameters)
 * [Passing parameters to a task](#passing-parameters-to-a-task)
-* [Passing parameters from the command line](#passing-parameters-from-the-command-line)
-* [Passing parameters from other tasks](#passing-parameters-from-other-tasks)
+  * [Passing parameters from the command line](#passing-parameters-from-the-command-line)
+  * [Passing parameters from other tasks](#passing-parameters-from-other-tasks)
 
 ## Installation and usage
 
