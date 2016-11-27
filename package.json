@@ -1,7 +1,7 @@
 {
   "name": "gulp-parameterized",
   "description": "Parameterize gulp tasks",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": {
     "name": "Sven Schönung <sven.schoenung@gmail.com> (http://sven.schoenung.org/)"
   },
