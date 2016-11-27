@@ -12,6 +12,12 @@ function createInstance(config) {
   var gulp = config.gulp;
   config.gulp = _.isFunction(gulp) ? gulp : function() { return gulp; };
 
+  var paramsName = config.paramsName;
+  config.paramsName = _.isArray(paramsName) ? paramsName : [paramsName];
+
+  var cbName = config.callbackName;
+  config.callbackName = _.isArray(cbName) ? cbName : [cbName];
+
   var instance = createTask(config);
 
   instance.task = instance;
@@ -32,5 +38,7 @@ module.exports = createInstance({
   gulp: requireGulp,
   argv: yargs.argv,
   log: gutil.log,
+  paramsName: ['params', 'parameters'],
+  callbackName: ['done', 'cb', 'callback'],
   _require: null
 });

@@ -4,6 +4,7 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var _ = require('lodash');
 
 function requireUncached(mod) {
   delete require.cache[require.resolve(mod)];
@@ -15,8 +16,8 @@ function init(opts) {
   return requireUncached('./index.js').withOptions(opts);
 }
 
-function testCallingTask(config) {
-  var parameterized = init({ argv: config.argv || {} });
+function testCallingTask(config, cb) {
+  var parameterized = init(_.assign({ argv: {} }, config));
   var gulp = requireUncached('gulp');
 
   function resultCallback(r) { config.actual = r; }
@@ -25,7 +26,7 @@ function testCallingTask(config) {
 
   gulp.series('task')(function() {
     expect(config.actual).to.eql(config.expected);
-    config.callback();
+    cb();
   });
 }
 
@@ -109,8 +110,7 @@ describe('parameterized.task()', function() {
         }));
       },
       expected: 'taskCalled',  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('provides a _.done() callback', function(cb) {
@@ -122,8 +122,57 @@ describe('parameterized.task()', function() {
         }));
       },
       expected: 'taskCalled',  
-      callback: cb
-    });
+    }, cb);
+  });
+
+  it('provides a _.cb() callback', function(cb) {
+    testCallingTask({
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result('taskCalled');
+          _.cb();
+        }));
+      },
+      expected: 'taskCalled',  
+    }, cb);
+  });
+
+  it('provides a _.callback() callback', function(cb) {
+    testCallingTask({
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result('taskCalled');
+          _.callback();
+        }));
+      },
+      expected: 'taskCalled',  
+    }, cb);
+  });
+
+  it('can provide a custom named callback', function(cb) {
+    testCallingTask({
+      callbackName: 'theCallback',
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result('taskCalled');
+          _.theCallback();
+        }));
+      },
+      expected: 'taskCalled',  
+    }, cb);
+  });
+
+  it('can provide multiple custom named callbacks', function(cb) {
+    testCallingTask({
+      callbackName: ['theCallback', 'theOtherCallback'],
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result('taskCalled');
+          _.theOtherCallback();
+        }));
+      },
+      expected: 'taskCalled',  
+    }, cb);
   });
 
   it('provides params in _.params', function(cb) {
@@ -136,8 +185,48 @@ describe('parameterized.task()', function() {
         }));
       },
       expected: { param: 'foo' },  
-      callback: cb
-    });
+    }, cb);
+  });
+
+  it('provides params in _.parameters', function(cb) {
+    testCallingTask({
+      argv: { param: 'foo' },
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result(_.parameters);
+          _.done();
+        }));
+      },
+      expected: { param: 'foo' },  
+    }, cb);
+  });
+
+  it('can provide a custom named params object', function(cb) {
+    testCallingTask({
+      paramsName: 'theParams',
+      argv: { param: 'foo' },
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result(_.theParams);
+          _.done();
+        }));
+      },
+      expected: { param: 'foo' },  
+    }, cb);
+  });
+
+  it('can provide multiple custom named params objects', function(cb) {
+    testCallingTask({
+      paramsName: ['theParams', 'theParameters'],
+      argv: { param: 'foo' },
+      setup: function(gulp, parameterized, result) {
+        gulp.task('task', parameterized(function(_) {
+          result(_.theParameters);
+          _.done();
+        }));
+      },
+      expected: { param: 'foo' },  
+    }, cb);
   });
 
   it('provides params in second argument', function(cb) {
@@ -150,8 +239,7 @@ describe('parameterized.task()', function() {
         }));
       },
       expected: { param: 'foo' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts default params as object', function(cb) {
@@ -164,8 +252,7 @@ describe('parameterized.task()', function() {
         }, { p1: 'v1', p2: 'XXX' }));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts default params as array', function(cb) {
@@ -178,8 +265,7 @@ describe('parameterized.task()', function() {
         }, ['--p1', 'v1', '--p2', 'XXX']));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts default params as string', function(cb) {
@@ -192,8 +278,7 @@ describe('parameterized.task()', function() {
         }, '--p1 v1 --p2 XXX'));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts name and default params as object', function(cb) {
@@ -206,8 +291,7 @@ describe('parameterized.task()', function() {
         }, { p1: 'v1', p2: 'XXX' }));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts name and default params as array', function(cb) {
@@ -220,8 +304,7 @@ describe('parameterized.task()', function() {
         }, ['--p1', 'v1', '--p2', 'XXX']));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('accepts name and default params as string', function(cb) {
@@ -234,8 +317,7 @@ describe('parameterized.task()', function() {
         }, '--p1 v1 --p2 XXX'));
       },
       expected: { p1: 'v1', p2: 'v2', p3: 'v3' },  
-      callback: cb
-    });
+    }, cb);
   });
 
   it('can call another task with a name and params object', function(cb) {
