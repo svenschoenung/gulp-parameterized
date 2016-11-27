@@ -352,6 +352,32 @@ describe('parameterized.task()', function() {
     });
   });
 
+  it('can call another task with a params string and object', function(cb) {
+    testCallingOtherTask({
+      call: ['otherTask --p1 foo --p2 bar', { p2: 'quux', p3: 'baz' }],
+      expected: { p1: 'foo', p2: 'bar', p3: 'baz' },
+      callback: cb
+    });
+  });
+
+  it('can call another task with a params string and array', function(cb) {
+    testCallingOtherTask({
+      call: ['otherTask --p1 foo --p2 bar', ['--p2', 'quux', '--p3', 'baz']],
+      expected: { p1: 'foo', p2: 'bar', p3: 'baz' },
+      callback: cb
+    });
+  });
+
+  it('can call another task with a params string and string', function(cb) {
+    testCallingOtherTask({
+      call: ['otherTask --p1 foo --p2 bar', '--p2 quux --p3 baz'],
+      expected: { p1: 'foo', p2: 'bar', p3: 'baz' },
+      callback: cb
+    });
+  });
+
+
+
   it('fails for invalid arguments', function(cb) {
     var gulp = requireUncached('gulp');
     var parameterized = requireUncached('./index.js');
@@ -373,12 +399,12 @@ describe('parameterized.task()', function() {
     gulp.task(parameterized('task1', function(done, params) {
       config.actual.task1 = params;
       done();
-    }, config.task1));
+    }, config.defaults.task1));
 
     gulp.task(parameterized('task2', function(done, params) {
       config.actual.task2 = params;
       done();
-    }, config.task2));
+    }, config.defaults.task2));
 
     gulp.task('task', config.task(function() {
       var args = Array.prototype.slice.call(arguments);
@@ -393,103 +419,125 @@ describe('parameterized.task()', function() {
 
   describe('parameterized.' + composition + '()', function() {
 
+/*       
+param:   P1 P2 P3 P4 P5 P6 P7
+-----------------------------
+default: D1       D4    D6 D7
+compose:    C2    C4 C5    C7
+argv:          A3    A5 A6 A7
+-----------------------------
+         D1 C2 A3 C4 A5 A6 A7
+*/
+
     it('can call other tasks by name', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1: {  },
+          task2: { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
           return compose('task1', 'task2');
         },
+        argv:    {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P2: 'A2',           P4: 'A4', P5: 'A5' },
-          task2: { P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1: {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
+          task2: { P1:'D1',        P3:'A3',P4:'D4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
     });
 
     it('can call other tasks by name and params object', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1:  {  },
+          task2:  { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
-          var params = { P1: 'C1', P2: 'C2', P3: 'C3', P4: 'C4' };
-          return compose('task1', 'task2', params);
+          var p = {         P2:'C2',        P4:'C4',P5:'C5',        P7:'C7' };
+          return compose('task1', 'task2', p);
         },
+        argv:     {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P1: 'C1', P2: 'A2', P3: 'C3', P4: 'A4', P5: 'A5' },
-          task2: { P1: 'C1', P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1:  {         P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
+          task2:  { P1:'D1',P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
     });
-
-
 
     it('can call other tasks by name and params array', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1:  {  },
+          task2:  { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
-          var params = ['--P1', 'C1', '--P2', 'C2', '--P3', 'C3', '--P4', 'C4'];
-          return compose('task1', 'task2', params);
+          var p = [      '--P2','C2',    '--P4','C4','--P5','C5','--P7','C7'];
+          return compose('task1', 'task2', p);
         },
+        argv:     {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P1: 'C1', P2: 'A2', P3: 'C3', P4: 'A4', P5: 'A5' },
-          task2: { P1: 'C1', P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1:  {         P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
+          task2:  { P1:'D1',P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
     });
-
+ 
     it('can call other tasks by params string', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1:  {  },
+          task2:  { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
-          return compose('task1 --P1 C1 --P2 C2 --P3 C3 --P4 C4',
-                         'task2 --P1 C1 --P2 C2 --P3 C3 --P4 C4');
+          return compose('task1 --P2 C2 --P4 C4 --P5 C5 --P7 C7',
+                         'task2 --P2 C2 --P4 C4 --P5 C5 --P7 C7');
         },
+        argv:     {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P1: 'C1', P2: 'A2', P3: 'C3', P4: 'A4', P5: 'A5' },
-          task2: { P1: 'C1', P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1:  {         P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
+          task2:  { P1:'D1',P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
     });
 
     it('can call other tasks by params string and params object', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1:  {  },
+          task2:  { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
-          return compose('task1         --P2 C2 --P3 C3 --P4 C4',
-                         'task2 --P1 C1 --P2 C2 --P3 C3 --P4 C4',
-                         { P1: 'CX' });
+          return compose('task1 --P2 C2         --P5 C5 --P7 C7',
+                         'task2 --P2 C2 --P4 C4 --P5 C5 --P7 C7',
+                         { P4:'X4' });
         },
+        argv:     {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P1: 'CX', P2: 'A2', P3: 'C3', P4: 'A4', P5: 'A5' },
-          task2: { P1: 'C1', P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1:  {         P2:'C2',P3:'A3',P4:'X4',P5:'A5',P6:'A6',P7:'A7' },
+          task2:  { P1:'D1',P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
     });
 
     it('can call other tasks by params string and params array', function(cb) {
       testCallingOtherTasks({
-        argv: { P2: 'A2', P4: 'A4', P5: 'A5' },
-        task1: {},
-        task2: { P3: 'T3', P4: 'T4' },
+        defaults: {
+          task1:  {  },
+          task2:  { P1:'D1',                P4:'D4',        P6:'D6',P7:'D7' }, 
+        }, 
         task: function(compose) {
-          return compose('task1         --P2 C2 --P3 C3 --P4 C4',
-                         'task2 --P1 C1 --P2 C2 --P3 C3 --P4 C4',
-                         ['--P1', 'CX']);
+          return compose('task1 --P2 C2         --P5 C5 --P7 C7',
+                         'task2 --P2 C2 --P4 C4 --P5 C5 --P7 C7',
+                         ['--P4', 'X4']);
         },
+        argv:     {                 P3:'A3',        P5:'A5',P6:'A6',P7:'A7' },
         expected: {
-          task1: { P1: 'CX', P2: 'A2', P3: 'C3', P4: 'A4', P5: 'A5' },
-          task2: { P1: 'C1', P2: 'A2', P3: 'T3', P4: 'A4', P5: 'A5' }
+          task1:  {         P2:'C2',P3:'A3',P4:'X4',P5:'A5',P6:'A6',P7:'A7' },
+          task2:  { P1:'D1',P2:'C2',P3:'A3',P4:'C4',P5:'A5',P6:'A6',P7:'A7' },
         },
       }, cb);
+
     });
+
   });
 });
