@@ -11,6 +11,8 @@ Parameterize gulp tasks.
 
 **NOTE: REQUIRES GULP 4.0**
 
+See [CHANGELOG](CHANGELOG.md) for latest changes.
+
 ## Installation
 
 ```
@@ -48,7 +50,7 @@ gulp.task('hello-world', parameterized.series('hello --name world'));
 gulp.task('hello-gulp', parameterized.series('hello --name gulp'));
 ```
 
-Invoking the `hello-gulp` task on the command line:
+You can then invoke the `hello-gulp` task on the command line:
 
 ```
 $ gulp hello-gulp
