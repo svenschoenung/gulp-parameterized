@@ -12,11 +12,49 @@
 
 ## Installation and usage
 
+Installing `gulp-parameterized` is done as it normaly is, through `npm`:
+
+```
+npm install --save-dev gulp-parameterized
+```
+
+After `gulp-paramterized` is installed you can require it in your gulpfile:
+
+```javascript
+var parameterized = require('gulp-parameterized');
+```
+
+In most cases that's all there is to it. When you require the 
+`gulp-parameterized` instance it will automatically access the locally
+installed gulp instance, meaning you won't have to do anything.
+
+If for some reason this doesn't work and gulp cannot be loaded you
+can still explicitly pass an instance of gulp to `gulp-parameterized`:
+
+```javascript
+var gulp = require('gulp');
+var parameterized = require('gulp-parameterized').withGulp(gulp);
+```
+
+Besides the gulp instance you can also pass 
+a variety of options to `gulp-parameterized` using `withOptions()`:
+
+```javascript
+var parameterized = require('gulp-parameterized').withOptions({
+  callbackName: 'cb',
+  paramsName: 'params'
+});
+```
+
+See the [API documentation]() for a list of all available options.
 
 ## Parameterizing a task
 
-Any task function that needs to accept parameters must be wrapped
-by `parameterized.task()`:
+Once you've successfully installed and initialized the `parameterized` object
+you can start parameterizing tasks.
+
+First of all any task function that should be able to receive parameters must
+be wrapped by `parameterized.task()`:
 
 ```javascript
 gulp.task('hello', parameterized.task(function(cb, params) {
@@ -38,14 +76,15 @@ cb();
 }));
 ```
 
-Both variations are identical. We will be using the shorter one 
-throughout this guide.
+Both variations for parameterizing tasks are identical. We will be using the
+shorter one throughout this guide.
 
 ### Accepting parameters in a task
 
 Regular non-parameterized gulp tasks can take exactly one argument: a
 callback function (usually named `done` or `cb`) that is used to signal
-[async completion]() back to gulp. Any other arguments a task function may
+[async completion](https://github.com/gulpjs/gulp/blob/4.0/docs/API.md#async-support)
+back to gulp. Any other arguments a task function may
 declare remain unused and will be `undefined` when the task runs.
 
 Parameterized gulp tasks on the other hand need access to the callback
