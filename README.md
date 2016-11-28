@@ -26,16 +26,16 @@ You can accept parameters in a task by wrapping the task function in `parameteri
 ```javascript
 var parameterized = require('gulp-parameterized');
 
-gulp.task('hello', parameterized(function(cb, params)) {
+gulp.task('hello', parameterized(function(cb, params) {
   console.log('hello ' + params.name + '!');
   cb();
-});
+}));
 ```
 
 You can then pass parameters to a task on the command line:
 
 ```
-$ gulp hello --name world!
+$ gulp hello --name world
 [23:43:51] Using gulpfile ~/hello-example/gulpfile.js
 [23:43:51] Starting 'hello'...
 hello world!
