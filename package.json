@@ -14,6 +14,7 @@
     "node": ">= 0.10"
   },
   "dependencies": {
+    "assert": "^1.4.1",
     "gulp-util": "^3.0.7",
     "lodash": "^4.16.6",
     "yargs": "^6.3.0"

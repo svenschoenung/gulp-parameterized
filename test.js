@@ -4,6 +4,7 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var assert = require('assert');
 var _ = require('lodash');
 
 function requireUncached(mod) {
@@ -376,7 +377,12 @@ describe('parameterized.task()', function() {
     });
   });
 
-
+  it('fails if other task is not defined', function(cb) {
+    var gulp = requireUncached('gulp');
+    var parameterized = init();
+    expect(parameterized.bind(null, 'task')).to.throw(assert.AssertionError);
+    cb();
+  });
 
   it('fails for invalid arguments', function(cb) {
     var gulp = requireUncached('gulp');
@@ -537,6 +543,13 @@ argv:          A3    A5 A6 A7
         },
       }, cb);
 
+    });
+
+    it('fails if other task is not defined', function(cb) {
+      var gulp = requireUncached('gulp');
+      var parameterized = init();
+      expect(parameterized.series.bind(null, 'task')).to.throw(assert.AssertionError);
+      cb();
     });
 
   });
