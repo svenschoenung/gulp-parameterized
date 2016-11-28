@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.1 (2016-11-28)
+
+**Documentation**
+- Fix mistakes in README examples
+
 ## v0.1.0 (2016-11-27)
 
 **Features**
