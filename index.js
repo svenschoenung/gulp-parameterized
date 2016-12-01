@@ -2,21 +2,16 @@ var _ = require('lodash');
 var yargs = require('yargs');
 var gutil = require('gulp-util');
 
+var normalizeConfig = require('./lib/util/normalizeConfig.js');
 var requireGulp = require('./lib/util/requireGulp.js');
 
 var createTask = require('./lib/task.js');
 var createComposition = require('./lib/composition.js');
 
+
 function createInstance(config) {
 
-  var gulp = config.gulp;
-  config.gulp = _.isFunction(gulp) ? gulp : function() { return gulp; };
-
-  var paramsName = config.paramsName;
-  config.paramsName = _.isArray(paramsName) ? paramsName : [paramsName];
-
-  var cbName = config.callbackName;
-  config.callbackName = _.isArray(cbName) ? cbName : [cbName];
+  config = normalizeConfig(config)
 
   var instance = createTask(config);
 
