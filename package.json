@@ -17,7 +17,8 @@
     "assert": "^1.4.1",
     "gulp-util": "^3.0.7",
     "lodash": "^4.16.6",
-    "yargs": "^6.3.0"
+    "yargs": "^6.3.0",
+    "snyk": "^1.319.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -31,7 +32,9 @@
   "scripts": {
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha test.js test/*.js --report html -- -R spec",
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha test.js test/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "codacy": "istanbul cover ./node_modules/mocha/bin/_mocha test.js test/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
+    "codacy": "istanbul cover ./node_modules/mocha/bin/_mocha test.js test/*.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "keywords": [
     "gulp",
@@ -50,5 +53,6 @@
     "series",
     "parallel"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "snyk": true
 }
